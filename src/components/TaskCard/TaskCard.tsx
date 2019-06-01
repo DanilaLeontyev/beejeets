@@ -1,17 +1,68 @@
 import React from 'react';
-import { Task } from '../../store/task/types';
+import { Task, EditTask } from '../../store/task/types';
 
 interface TaskCardProps {
+    auth?: boolean;
     task: Task;
+    onSave: (form: EditTask) => void;
 }
 
-const TaskCard: React.FC<TaskCardProps> = (props: TaskCardProps) => {
-    const { text, email, status, username, id } = props.task;
-    return (
-        <div className="TaskCard">
-            {id} {text} {email} {status} {username}
-        </div>
-    )
+interface TaskCardState {
+    text: string;
+    status: 0 | 10;
+}
+
+class TaskCard extends React.Component<TaskCardProps, TaskCardState> {
+    constructor(props: TaskCardProps) {
+        super(props);
+        this.state = {
+            text: '',
+            status: 0,
+        }
+    }
+
+    onClickSave = () => {
+        this.props.onSave({
+            id: this.props.task.id,
+            text: this.state.text,
+            status: this.state.status ? this.state.status : this.props.task.status,
+        });
+    }
+
+    onChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({
+            ...this.state,
+            text: e.target.value,
+        })
+    }
+
+    onChangeStatus = (e: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({
+            ...this.state,
+            status: this.state.status ? 0 : 10,
+        })
+    }
+
+    render() {
+        const { text, email, status, username } = this.props.task;
+        const { text: textState, status: statusState } = this.state
+        const { auth } = this.props;
+        let checkboxStatus = statusState ? Boolean(statusState) : Boolean(status)
+        return (
+            <div className="TaskCard">
+                {email} {username}
+                {!auth
+                    ? text
+                    : <input type="text" value={textState ? textState : text} onChange={this.onChangeText} />
+                }
+                <input type="checkbox"
+                    disabled={!auth || status ? true : false}
+                    checked={checkboxStatus}
+                    onChange={this.onChangeStatus} />
+                <button hidden={!auth} onClick={this.onClickSave}>Сохранить</button>
+            </div>
+        )
+    }
 }
 
 export default TaskCard;

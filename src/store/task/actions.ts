@@ -1,6 +1,6 @@
 import { CustomThunkDispatch } from './../../types/ThunkDispatch';
 import { action } from 'typesafe-actions'
-import { TaskActions, Task, TaskSort, AddTask } from './types'
+import { TaskActions, Task, TaskSort, AddTask, EditTask } from './types'
 
 const getCreateTaskApi = () => {
     return 'https://uxcandy.com/~shapoval/test-task-backend/v2/create?developer=danila';
@@ -9,6 +9,10 @@ const getCreateTaskApi = () => {
 const getTaskAPI = (sortField: string, sortDirection: string, page: number): string => {
     return `https://uxcandy.com/~shapoval/test-task-backend/v2/?developer=danila
     &sortfield=${sortField}&sort_direction=${sortDirection}&page=${page}`
+}
+
+const editTaskAPI = (taskId: number): string => {
+    return `https://uxcandy.com/~shapoval/test-task-backend/v2/edit/${taskId}?developer=danila`
 }
 
 export function fetchTask(sort?: TaskSort, pageNumber?: number) {
@@ -33,9 +37,9 @@ export function fetchTask(sort?: TaskSort, pageNumber?: number) {
 export function addTask(formField: AddTask) {
     return async (dispatch: CustomThunkDispatch) => {
         let form = new FormData();
-        form.append("username", formField.username);
-        form.append("email", formField.email);
-        form.append("text", formField.text);
+        form.append('username', formField.username);
+        form.append('email', formField.email);
+        form.append('text', formField.text);
         fetch(getCreateTaskApi(), { method: 'POST', body: form }).then(res => console.log(res))
         dispatch(fetchTask())
     }
@@ -52,6 +56,23 @@ export function changeSorting(sort: TaskSort) {
     return async (dispatch: CustomThunkDispatch) => {
         dispatch(setSorting(sort));
         dispatch(fetchTask(sort))
+    }
+}
+
+export function editTask(formField: EditTask) {
+    return async (dispatch: CustomThunkDispatch) => {
+        let form = new FormData();
+        let token = window.localStorage.getItem('token')
+        form.append('token', token ? token : '');
+        form.append('text', formField.text);
+        form.append('status', String(formField.status));
+        fetch(editTaskAPI(formField.id), { method: 'POST', body: form })
+            .then(res =>
+                res.json().then(body => {
+                    dispatch(fetchTask())
+                    console.log(body)
+                })
+            )
     }
 }
 

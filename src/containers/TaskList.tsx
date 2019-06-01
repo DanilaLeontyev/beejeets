@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { CustomThunkDispatch } from '../types/ThunkDispatch';
 import { ApplicationState } from '../store';
-import { TaskState, TaskSort, AddTask } from '../store/task/types';
-import { fetchTask, addTask, changePage, changeSorting } from '../store/task/actions';
+import { TaskState, TaskSort, AddTask, EditTask } from '../store/task/types';
+import { fetchTask, addTask, changePage, changeSorting, editTask } from '../store/task/actions';
 import TaskCard from '../components/TaskCard/TaskCard';
 import Pagination from '../components/Pagination/Pagination';
 import Filter from '../components/Filter/Filter';
@@ -13,9 +13,11 @@ interface TaskListActions {
     addTask: (form: AddTask) => void;
     changePage: (pageNumber: number) => void;
     changeSorting: (sort: TaskSort) => void;
+    editTask: (form: EditTask) => void;
 }
 
 interface TaskListProps {
+    auth: boolean;
     task: TaskState;
     actions: TaskListActions
 }
@@ -79,18 +81,23 @@ class TaskList extends React.Component<TaskListProps, TaskListState> {
         })
     }
 
+    onTaskSave = (form: EditTask) => {
+        this.props.actions.editTask(form);
+    }
+
     render() {
+        const { auth } = this.props;
         const { tasksLoading, tasks, totalTaskCount } = this.props.task;
         const { username, text, email } = this.state.form;
         return (
             <div>
-                
                 <input placeholder='Имя пользователя' type="text" value={username} onChange={(value) =>
                     this.onChangeInput(value.target.value, 'username')} />
                 <input placeholder='Название задачи' type="text" value={text} onChange={(value) =>
                     this.onChangeInput(value.target.value, 'text')} />
                 <input placeholder='e-mail' type="email" value={email} onChange={(value) =>
                     this.onChangeInput(value.target.value, 'email')} /> <br />
+
                 <button onClick={this.addTask}>Добавить задачу</button> <br />
 
                 <Filter onChange={this.onFilterChange} filterName={'id'} />
@@ -100,7 +107,7 @@ class TaskList extends React.Component<TaskListProps, TaskListState> {
 
                 {!tasksLoading &&
                     tasks.map(task => (
-                        <TaskCard key={task.id} task={task} />
+                        <TaskCard key={task.id} task={task} auth={auth} onSave={this.onTaskSave} />
                     ))
                 }
                 {tasksLoading && <div>Загрузка</div>}
@@ -112,6 +119,7 @@ class TaskList extends React.Component<TaskListProps, TaskListState> {
 
 const mapStateToProps = (state: ApplicationState) => ({
     task: state.task,
+    auth: state.auth.authenticated,
 })
 
 const mapDispatchToProps = (dispatch: CustomThunkDispatch): { actions: TaskListActions } => {
@@ -121,6 +129,7 @@ const mapDispatchToProps = (dispatch: CustomThunkDispatch): { actions: TaskListA
             addTask: (form: AddTask) => dispatch(addTask(form)),
             changePage: (pageNumber: number) => dispatch(changePage(pageNumber)),
             changeSorting: (sort: TaskSort) => dispatch(changeSorting(sort)),
+            editTask: (form: EditTask) => dispatch(editTask(form))
         }
     })
 }

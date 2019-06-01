@@ -20,6 +20,12 @@ export interface AddTask {
     email: string;
 }
 
+export interface EditTask {
+    id: number;
+    text: string;
+    status: 0 | 10;
+}
+
 export type SortField = 'id' | 'username' | 'email' | 'status'
 export type SortDirection = 'asc' | 'desc'
 
