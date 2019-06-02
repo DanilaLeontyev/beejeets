@@ -37,8 +37,8 @@ const reducer: Reducer<TaskState> = (state = initialState, action) => {
             return {
                 ...state,
                 taskSort: {
-                    sortField: action.payload.SortField,
-                    sortDirection: action.SortDirection
+                    sortField: action.payload.sortField,
+                    sortDirection: action.payload.sortDirection
                 }
             }
         }

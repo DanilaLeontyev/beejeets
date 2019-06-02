@@ -17,6 +17,7 @@ class Filter extends React.Component<FilterProps, FilterState> {
             filterDirection: 'asc'
         }
     }
+    
     onClick = () => {
         this.setState({
             filterDirection: this.state.filterDirection === 'asc' ? 'desc' : 'asc'

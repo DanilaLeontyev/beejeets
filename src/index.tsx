@@ -7,8 +7,13 @@ import { Provider } from 'react-redux';
 import configureStore from './configureStore';
 import { initialState as taskInitialState } from './store/task/reducer';
 import { initialState as authInitialState } from './store/auth/reducer';
+import { initialState as addTaskInitialState } from './store/addTask/reducer';
 
-const store = configureStore({ task: taskInitialState, auth: authInitialState })
+const store = configureStore({
+    task: taskInitialState,
+    auth: authInitialState,
+    addTask: addTaskInitialState
+})
 
 ReactDOM.render(
     <Provider store={store}>

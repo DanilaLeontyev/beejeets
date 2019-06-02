@@ -4,13 +4,14 @@ import { CustomThunkDispatch } from '../types/ThunkDispatch';
 import { ApplicationState } from '../store';
 import { AuthState, LogInForm } from '../store/auth/types';
 import { logIn, authChangeUsername, authChangePassword, setAuthenticated, logOut } from '../store/auth/actions';
+import AuthForm from '../components/AuthForm/AuthForm';
 
 interface AuthActions {
     logIn: (form: LogInForm) => void;
+    logOut: () => void;
     authChangeUsername: (username: string) => void;
     authChangePassword: (password: string) => void;
     setAuthenticated: (authenticated: boolean) => void;
-    logOut: () => void;
 }
 
 interface AuthProps {
@@ -50,24 +51,16 @@ class Auth extends React.Component<AuthProps> {
     render() {
         const { username, password, error, authenticated } = this.props.auth;
         return (
-            <div>
-                {!authenticated &&
-                    <div>
-                        <button onClick={this.onLogIn}>Вход</button> <br />
-                        <input type='text'
-                            placeholder='Логин пользователя'
-                            value={username}
-                            onChange={this.onChangeUsername}
-                            style={error.username ? { borderColor: 'red' } : { borderColor: 'black' }} />
-                        <input type='password'
-                            placeholder='Пароль'
-                            value={password}
-                            onChange={this.onChangePassword}
-                            style={error.password ? { borderColor: 'red' } : { borderColor: 'black' }} />
-                    </div>
-                }
-                {authenticated && <button onClick={this.onLogOut}>Выход</button>}
-            </div>
+            <AuthForm
+                username={username}
+                password={password}
+                error={error}
+                authenticated={authenticated}
+                onLogIn={this.onLogIn}
+                onLogOut={this.onLogOut}
+                onChangeUserName={this.onChangeUsername}
+                onChangePassword={this.onChangePassword}
+            />
         )
     }
 }

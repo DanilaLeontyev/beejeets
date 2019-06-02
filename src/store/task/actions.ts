@@ -1,27 +1,27 @@
+import { ApplicationState } from './../index';
 import { CustomThunkDispatch } from './../../types/ThunkDispatch';
 import { action } from 'typesafe-actions'
-import { TaskActions, Task, TaskSort, AddTask, EditTask } from './types'
-
-const getCreateTaskApi = () => {
-    return 'https://uxcandy.com/~shapoval/test-task-backend/v2/create?developer=danila';
-}
+import { TaskActions, Task, TaskSort, EditTask } from './types'
 
 const getTaskAPI = (sortField: string, sortDirection: string, page: number): string => {
     return `https://uxcandy.com/~shapoval/test-task-backend/v2/?developer=danila
-    &sortfield=${sortField}&sort_direction=${sortDirection}&page=${page}`
+    &sort_field=${sortField}&sort_direction=${sortDirection}&page=${page}`
 }
 
 const editTaskAPI = (taskId: number): string => {
     return `https://uxcandy.com/~shapoval/test-task-backend/v2/edit/${taskId}?developer=danila`
 }
 
-export function fetchTask(sort?: TaskSort, pageNumber?: number) {
-    return async (dispatch: CustomThunkDispatch) => {
+export function fetchTask() {
+    return async (dispatch: CustomThunkDispatch, getState: () => ApplicationState) => {
+        const state = getState();
+        const { sortField, sortDirection } = state.task.taskSort
+        const { page } = state.task
         dispatch(fetchTaskStart());
         fetch(getTaskAPI(
-            sort ? sort.sortField : 'id',
-            sort ? sort.sortDirection : 'desc',
-            pageNumber ? pageNumber : 1))
+            sortField,
+            sortDirection,
+            page))
             .then((res) => {
                 res.json().then(body => {
                     if (body.status !== 'ok') {
@@ -34,28 +34,17 @@ export function fetchTask(sort?: TaskSort, pageNumber?: number) {
     }
 }
 
-export function addTask(formField: AddTask) {
-    return async (dispatch: CustomThunkDispatch) => {
-        let form = new FormData();
-        form.append('username', formField.username);
-        form.append('email', formField.email);
-        form.append('text', formField.text);
-        fetch(getCreateTaskApi(), { method: 'POST', body: form }).then(res => console.log(res))
-        dispatch(fetchTask())
-    }
-}
-
 export function changePage(pageNumber: number) {
     return async (dispatch: CustomThunkDispatch) => {
-        dispatch(setPage(pageNumber));
-        dispatch(fetchTask(undefined, pageNumber))
+        await dispatch(setPage(pageNumber));
+        dispatch(fetchTask())
     }
 }
 
 export function changeSorting(sort: TaskSort) {
     return async (dispatch: CustomThunkDispatch) => {
-        dispatch(setSorting(sort));
-        dispatch(fetchTask(sort))
+        await dispatch(setSorting(sort));
+        dispatch(fetchTask())
     }
 }
 

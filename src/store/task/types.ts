@@ -14,12 +14,6 @@ export enum TaskActions {
     SET_SORT = '@@task/SET_SORT'
 }
 
-export interface AddTask {
-    username: string;
-    text: string;
-    email: string;
-}
-
 export interface EditTask {
     id: number;
     text: string;
