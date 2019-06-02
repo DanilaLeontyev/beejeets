@@ -1,0 +1,17 @@
+.AddTask {
+    display: flex;
+    padding: 10px;
+    max-width: 500px;
+    flex-wrap: wrap;
+    justify-content: center;
+    background-color: #66bb6a;
+}
+
+.AddTask input {
+    width: 140px;
+    margin-right: 10px;
+}
+
+.AddTask--addButton {
+    margin-top: 10px;
+}

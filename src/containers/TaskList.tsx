@@ -7,6 +7,7 @@ import { fetchTask, changePage, changeSorting, editTask } from '../store/task/ac
 import TaskCard from '../components/TaskCard/TaskCard';
 import Pagination from '../components/Pagination/Pagination';
 import Filter from '../components/Filter/Filter';
+import './TaskList.css'
 
 interface TaskListActions {
     fetchTask: () => void;
@@ -43,16 +44,17 @@ class TaskList extends React.Component<TaskListProps> {
         const { tasksLoading, tasks, totalTaskCount, page } = this.props.task;
         return (
             <div>
-                <Filter onChange={this.onFilterChange} filterName={'id'} />
                 <Filter onChange={this.onFilterChange} filterName={'username'} />
                 <Filter onChange={this.onFilterChange} filterName={'email'} />
                 <Filter onChange={this.onFilterChange} filterName={'status'} />
-                {!tasksLoading &&
-                    tasks.map(task => (
-                        <TaskCard key={task.id} task={task} auth={auth} onSave={this.onTaskSave} />
-                    ))
-                }
-                {tasksLoading && <div>Загрузка</div>}
+                <div className='TaskList'>
+                    {!tasksLoading &&
+                        tasks.map(task => (
+                            <TaskCard key={task.id} task={task} auth={auth} onSave={this.onTaskSave} />
+                        ))
+                    }
+                    {tasksLoading && <div>Загрузка</div>}
+                </div>
                 <Pagination totalElement={totalTaskCount} changePage={this.onChangePage} currentPage={page} />
             </div>
         )

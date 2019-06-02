@@ -1,5 +1,6 @@
 import React from 'react';
 import { ErrorMessage } from '../../store/auth/types';
+import './AuthForm.css'
 
 interface AuthFormProps {
     username: string,
@@ -25,8 +26,7 @@ const AuthForm: React.FC<AuthFormProps> = (props: AuthFormProps) => {
     return (
         <div>
             {!authenticated &&
-                <div>
-                    <button onClick={onLogIn}>Вход</button> <br />
+                <div className='AuthForm'>
                     <input type='text'
                         placeholder='Логин пользователя'
                         value={username}
@@ -37,9 +37,14 @@ const AuthForm: React.FC<AuthFormProps> = (props: AuthFormProps) => {
                         value={password}
                         onChange={onChangePassword}
                         style={error.password ? { borderColor: 'red' } : { borderColor: 'black' }} />
+                    <button onClick={onLogIn}>Вход</button>
                 </div>
             }
-            {authenticated && <button onClick={onLogOut}>Выход</button>}
+            {authenticated &&
+                <div className='AuthForm'>
+                    <button onClick={onLogOut}>Выход</button>
+                </div>
+            }
         </div>
     )
 }

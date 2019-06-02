@@ -1,0 +1,24 @@
+.TaskCard {
+    display: flex;
+    background-color: #e1e2e1;
+    width: 80%;
+    margin: 0 auto;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    flex-direction: column;
+}
+
+.TaskCard--userInfo {
+    display: flex;
+    justify-content: space-between;
+}
+
+.TaskCard--text {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.TaskCard--textInput {
+    width: 100%;
+}

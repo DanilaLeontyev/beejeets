@@ -1,5 +1,6 @@
 import React from 'react';
 import { Task, EditTask } from '../../store/task/types';
+import './TaskCard.css'
 
 interface TaskCardProps {
     auth?: boolean;
@@ -49,17 +50,28 @@ class TaskCard extends React.Component<TaskCardProps, TaskCardState> {
         const { auth } = this.props;
         let checkboxStatus = statusState ? Boolean(statusState) : Boolean(status)
         return (
-            <div className="TaskCard">
-                {email} {username}
-                {!auth
-                    ? text
-                    : <input type="text" value={textState ? textState : text} onChange={this.onChangeText} />
-                }
-                <input type="checkbox"
-                    disabled={!auth || status ? true : false}
-                    checked={checkboxStatus}
-                    onChange={this.onChangeStatus} />
-                <button hidden={!auth} onClick={this.onClickSave}>Сохранить</button>
+            <div className='TaskCard'>
+                <div className='TaskCard--userInfo'>
+                    <input type='checkbox'
+                        disabled={!auth || status ? true : false}
+                        checked={checkboxStatus}
+                        onChange={this.onChangeStatus} />
+                    <span>{email}</span>
+                    <span>{username}</span>
+                </div>
+                <div className='TaskCard--text'>
+                    {!auth
+                        ? <div>{text}</div>
+                        : <input className='TaskCard--textInput'
+                            type="text"
+                            value={textState ? textState : text}
+                            onChange={this.onChangeText} />
+                    }
+                    <button hidden={!auth}
+                        onClick={this.onClickSave}>
+                        Сохранить
+                    </button>
+                </div>
             </div>
         )
     }
